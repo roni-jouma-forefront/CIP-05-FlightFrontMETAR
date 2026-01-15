@@ -1,0 +1,73 @@
+.maincontent-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background: #f5f7fa;
+}
+
+.example-card {
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  background: #fff;
+  margin: 24px;
+}
+
+.example-header-image {
+  background-image: linear-gradient(135deg, #2196f3 0%, #21cbf3 100%);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+mat-card-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+mat-card-content {
+  margin-top: 12px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.metar-input {
+  width: 100%;
+  font-size: 1.1rem;
+  padding: 12px 16px;
+  border: 1.5px solid #bdbdbd;
+  border-radius: 8px;
+  background: #f9f9f9;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.metar-input:focus {
+  border-color: #2196f3;
+  outline: none;
+  background: #fff;
+}
+
+.styled-btn {
+  border: 2px solid #2196f3;
+  border-radius: 6px;
+  padding: 6px 18px;
+  background: #fff;
+  color: #2196f3;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+}
+.styled-btn:hover {
+  background: #2196f3;
+  color: #fff;
+}
+
+mat-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
