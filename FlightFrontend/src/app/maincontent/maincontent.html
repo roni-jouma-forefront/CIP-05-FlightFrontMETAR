@@ -1,16 +1,57 @@
 <div class="maincontent-container">
-  <mat-card class="example-card" appearance="outlined">
-    <mat-card-header>
-      <div mat-card-avatar class="example-header-image"></div>
-      <mat-card-title>Tolka din METAR-sträng</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-label>Klistra in METAR här: </mat-label>
-      <input matInput type="text" class="metar-input" />
-      <button matSuffix matIconButton aria-label="Clear"></button>
-    </mat-card-content>
-    <mat-card-actions>
-      <button matButton class="styled-btn">knapp</button>
-    </mat-card-actions>
-  </mat-card>
+  <div class="card icao">
+    <div class="header">
+      <div class="header-icon">✈️</div>
+      <div>
+        <h1>Tolka ICAO-kod</h1>
+        <div class="subtitle">Hämta aktuell METAR för flygplats</div>
+      </div>
+    </div>
+
+    <label for="icao-input">ICAO-kod</label>
+    <input class="input" id="icao-input" placeholder="Exempel: ESSA" />
+
+    <div class="actions">
+      <button class="btn" (click)="runICAO()">SÖK</button>
+    </div>
+
+    <div id="result">
+      <h2>RESULTAT</h2>
+      <div>
+        <strong><p>METAR:</p></strong>
+        <p id="metarString"></p>
+      </div>
+      <table>
+        <tr>
+          <th></th>
+        </tr>
+        <tr>
+          <th></th>
+        </tr>
+        <tr>
+          <th></th>
+        </tr>
+        <tr>
+          <th></th>
+        </tr>
+        <tr>
+          <th></th>
+        </tr>
+      </table>
+      <!-- <div class="weather-icao">
+        <i class="wi wi-day-cloudy weather-icon"></i>
+        <strong>Stockholm / ESSA</strong>
+        <div class="updated">Uppdaterad 12:50Z</div>
+      </div>
+      <div class="item"><span>Vind: </span>SVAR</div>
+      <div class="item"><span>Sikt: </span>SVAR</div>
+      <div class="item"><span>Temperatur: </span>SVAR</div>
+      <div class="item"><span>QNH: </span>SVAR</div>
+      <div class="item"><span>Moln: </span>SVAR</div> -->
+      <!-- <div>
+        <span class="subtitle">Rå METAR (hämtad via ICAO)</span>
+        <div class="raw">METAR ESSA 121050Z 24012KT CAVOK 03/M02 Q1018</div>
+      </div> -->
+    </div>
+  </div>
 </div>

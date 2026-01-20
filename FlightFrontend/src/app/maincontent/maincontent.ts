@@ -6,6 +6,9 @@ import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 
+////
+import { HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-maincontent',
@@ -14,4 +17,29 @@ import {MatFormFieldModule} from '@angular/material/form-field';
   templateUrl: './maincontent.html',
   styleUrls: ['./maincontent.scss']
 })
-export class Maincontent {}
+export class Maincontent {
+  data: string | undefined; 
+  constructor(private http: HttpClient) {}
+
+  runICAO(): void {
+    const inputEl = document.getElementById("icao-input") as HTMLInputElement;
+    const icao = inputEl.value.trim().toUpperCase();
+
+    if(!/^[A-Za-z]+$/.test(icao)){
+      window.alert("Ogiltigt ICAO-kodformat, testa igen")
+      return;
+    }
+
+    this.fetchMetarForICAO(icao);
+  }
+
+  fetchMetarForICAO(icao: string) {
+    console.log("Här är koden: " + icao)
+    const response = "METAR ESSA 191420Z 19006KT 9999 BKN010 00/M02 Q1029 TEMPO BKN009"
+
+    const splitMetar = response.split(" ")
+    console.log(splitMetar)
+
+   // this.http.get(`https://aviationweather.gov/api/data/metar?ids=${icao}`).subscribe(response => {console.log("SVAR från backend ", response)})
+  }
+}

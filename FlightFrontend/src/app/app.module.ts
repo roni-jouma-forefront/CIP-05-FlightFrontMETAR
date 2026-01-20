@@ -1,15 +1,18 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { MenuComponent } from './components/menu.component';
+import { MenuComponent } from './menu/menu';
+import { HttpClientModule, provideHttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [],
   imports: [
     BrowserModule,
     RouterModule,
-    MenuComponent
+    MenuComponent,
+    HttpClientModule
   ],
-  exports: []
+  exports: [],
+  providers: [ provideHttpClient(),]
 })
 export class AppModule {}
