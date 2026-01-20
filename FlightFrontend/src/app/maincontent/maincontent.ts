@@ -37,6 +37,9 @@ export class Maincontent {
     console.log("Här är koden: " + icao)
     const response = "METAR ESSA 191420Z 19006KT 9999 BKN010 00/M02 Q1029 TEMPO BKN009"
 
+    const splitMetar = response.split(" ")
+    console.log(splitMetar)
+
    // this.http.get(`https://aviationweather.gov/api/data/metar?ids=${icao}`).subscribe(response => {console.log("SVAR från backend ", response)})
   }
 }
