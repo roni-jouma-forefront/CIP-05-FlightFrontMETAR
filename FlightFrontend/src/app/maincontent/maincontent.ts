@@ -25,23 +25,23 @@ export class Maincontent {
 
   //sköter dropdownen i inputen så att den 
 dropdown() {
-  const dropdownEl = document.getElementById("myDropdown");
+  const dropdownEl = document.getElementById("dropdown");
   if (dropdownEl) {
     dropdownEl.classList.toggle("show");
   }
 }
 
 //placerar vald essa i input-rutan och stänger den
-selectAirport(airport: any) {
-  const inputEl = document.getElementById("icao-input") as HTMLInputElement;
-  if (inputEl) {
-    inputEl.value = airport.ident;
-  }
-  const dropdownEl = document.getElementById("myDropdown");
-  if (dropdownEl) {
-    dropdownEl.classList.remove("show");
-  }
-}
+// selectAirport(airport: any) {
+//   const inputEl = document.getElementById("icao-input") as HTMLInputElement;
+//   if (inputEl) {
+//     inputEl.value = airport.ident;
+//   }
+//   const dropdownEl = document.getElementById("myDropdown");
+//   if (dropdownEl) {
+//     dropdownEl.classList.remove("show");
+//   }
+// }
 
 //hämtar csvc-filen. OBS ska bytas ut mot hämtning i backenden
   loadCSV() {
@@ -70,10 +70,13 @@ selectAirport(airport: any) {
     //hämtar inmatad ICAOkod samt felmeddelande vid felaktigt format
   runICAO(): void {
     const inputEl = document.getElementById("icao-input") as HTMLInputElement;
-    const icao = inputEl.value.trim().toUpperCase();
+    const input = inputEl.value.trim().toUpperCase();
+    const splitInput = input.split(" "); 
+    const icao = splitInput[0];
+console.log(icao)
 
     //Felmeddelande vi felaktig inpout
-    if(!/^[A-Za-z0-9]+$/.test(icao)){
+    if(!/^[A-Za-z0-9" "]+$/.test(icao)){
       window.alert("Ogiltigt ICAO-kodformat, testa igen")
       return;
     }

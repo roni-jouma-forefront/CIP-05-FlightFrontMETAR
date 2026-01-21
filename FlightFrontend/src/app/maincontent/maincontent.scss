@@ -9,11 +9,10 @@
 .card {
   width: 100%;
   max-width: 800px;
-  background: var(--card);
+  background: #fff;
   border-radius: var(--radius);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   padding: 24px;
-  background: #fff;
   margin: 24px;
   display: flex;
   flex-direction: column;
@@ -47,20 +46,11 @@ h1 {
   color: var(--muted);
 }
 
-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  display: block;
-  margin-bottom: 6px;
-}
 .actions {
   display: flex;
   justify-content: end;
 }
 
-//#id {}
-
-/////////////////////////////////////////////////////////////////////////////////////
 .input {
   width: 100%;
   font-size: 1.1rem;
@@ -72,11 +62,12 @@ label {
   margin-bottom: 8px;
   box-sizing: border-box;
   transition: border-color 0.2s;
-}
-.metar-input:focus {
-  border-color: #2196f3;
-  outline: none;
-  background: #fff;
+
+  &:focus {
+    border-color: #2196f3;
+    outline: none;
+    background: #fff;
+  }
 }
 
 button {
@@ -105,46 +96,8 @@ button {
     transform: scale(0.98);
   }
 }
-mat-card-actions {
-  display: flex;
-  justify-content: flex-end;
-}
 
-// Dropdown styles
-.dropdown {
+.form {
   position: relative;
-  width: 100%;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: white;
-  width: 100%;
-  max-height: 300px;
-  overflow-y: auto;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  border-radius: 4px;
-  margin-top: 4px;
-}
-
-.dropdown-content.show {
   display: block;
-}
-
-.dropdown-content p {
-  padding: 12px 16px;
-  margin: 0;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #f1f1f1;
-  }
-}
-
-.dropbtn {
-  width: 100%;
-  margin-bottom: 8px;
 }

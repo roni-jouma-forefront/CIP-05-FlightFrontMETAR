@@ -4,19 +4,29 @@
       <div class="header-icon">✈️</div>
       <div>
         <h1>Tolka ICAO-kod</h1>
-        <div class="subtitle">Hämta aktuell METAR för flygplats</div>
+        <div class="subtitle">Hämta aktuell METAR för flygplats baserat på ICAO-kod</div>
       </div>
     </div>
-
-    <label for="icao-input">ICAO-kod</label>
-    <div class="dropdown">
+    <div class="form">
       <input
         (click)="dropdown()"
         class="input"
         id="icao-input"
         placeholder="Sök flygplats (ICAO eller namn)"
+        list="airport-list"
       />
-      <div id="myDropdown" class="dropdown-content">
+      <datalist class="dropdown-list" id="airport-list">
+        <div id="dropdown-content">
+          @for (airport of airports; track airport.ident) {
+            <option>
+              <strong>{{ airport.ident }}</strong> {{ airport.name }}
+            </option>
+          } @empty {
+            <p>Inga flygplatser hittades.</p>
+          }
+        </div>
+      </datalist>
+      <!-- <div id="myDropdown" class="dropdown-content">
         @for (airport of airports; track airport.ident) {
           <p style="margin: 0; padding: 4px 0" (click)="selectAirport(airport)">
             <strong>{{ airport.ident }}</strong> - {{ airport.name }}
@@ -24,36 +34,16 @@
         } @empty {
           <p>Inga flygplatser hittades.</p>
         }
-      </div>
+      </div> -->
     </div>
 
     <div class="actions">
-      <button class="btn" (click)="runICAO()">SÖK</button>
+      <button class="btn" (click)="runICAO()">Välj</button>
     </div>
 
     <div id="result">
       <h2>RESULTAT</h2>
-      <div>
-        <strong><p>METAR:</p></strong>
-        <p id="metarString"></p>
-      </div>
-      <table>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-      </table>
+
       <!-- <div class="weather-icao">
         <i class="wi wi-day-cloudy weather-icon"></i>
         <strong>Stockholm / ESSA</strong>
