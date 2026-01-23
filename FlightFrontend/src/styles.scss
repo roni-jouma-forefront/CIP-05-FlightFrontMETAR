@@ -6,7 +6,7 @@
 @use '@angular/material' as mat;
 
 :root {
-  --bg: #f4f7fb;
+  --bg: #e8eaf6;
   --card: #ffffff;
   --primary: #2563eb;
   --border: #e5e7eb;
@@ -17,7 +17,17 @@
 }
 
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
+}
+
+h1,
+h2,
+p {
+  font-family: 'Inter', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
 }
 
 html {
@@ -47,8 +57,15 @@ body {
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
 
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+    url(/assets/airplaneimg.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: var(--mat-sys-surface);
   // Reset the user agent margin.
   margin: 0;
   height: 100%;
 }
-/* You can add global styles to this file, and also import other style files */

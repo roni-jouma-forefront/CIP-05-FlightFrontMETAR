@@ -56,6 +56,7 @@ dropdown() {
 
     //hämtar inmatad ICAOkod samt felmeddelande vid felaktigt format
   runICAO(): void {
+    
     const inputEl = document.getElementById("icao-input") as HTMLInputElement;
     const input = inputEl.value.trim().toUpperCase();
     const splitInput = input.split(" "); 
@@ -66,6 +67,7 @@ dropdown() {
       window.alert("Ogiltigt ICAO-kodformat, testa igen")
       return;
     }
+    console.log(icao)
 
     this.fetchMetarForICAO(icao);
   }
@@ -75,4 +77,11 @@ dropdown() {
     const response = "METAR ESSA 191420Z 19006KT 9999 BKN010 00/M02 Q1029 TEMPO BKN009"
    // this.http.get(`https://aviationweather.gov/api/data/metar?ids=${icao}`).subscribe(response => {console.log("SVAR från backend ", response)})
   }
+
+runMetar() {
+  const inputMetar = document.getElementById("metar-input") as HTMLInputElement;
+  const metar = inputMetar.value.trim().toUpperCase();
+  console.log("Metar: ", metar)
+}
+
 }
