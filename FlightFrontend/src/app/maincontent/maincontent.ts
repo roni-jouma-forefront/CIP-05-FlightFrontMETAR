@@ -8,7 +8,6 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { HttpClient } from '@angular/common/http';
 import * as Papa from "papaparse";
 
-
 @Component({
   selector: 'app-maincontent',
   standalone: true,
@@ -30,18 +29,6 @@ dropdown() {
     dropdownEl.classList.toggle("show");
   }
 }
-
-//placerar vald essa i input-rutan och stänger den
-// selectAirport(airport: any) {
-//   const inputEl = document.getElementById("icao-input") as HTMLInputElement;
-//   if (inputEl) {
-//     inputEl.value = airport.ident;
-//   }
-//   const dropdownEl = document.getElementById("myDropdown");
-//   if (dropdownEl) {
-//     dropdownEl.classList.remove("show");
-//   }
-// }
 
 //hämtar csvc-filen. OBS ska bytas ut mot hämtning i backenden
   loadCSV() {
