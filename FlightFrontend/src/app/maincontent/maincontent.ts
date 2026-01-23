@@ -73,9 +73,6 @@ dropdown() {
   //hämtning av koden OBS implementera från BE
   fetchMetarForICAO(icao: string) {
     const response = "METAR ESSA 191420Z 19006KT 9999 BKN010 00/M02 Q1029 TEMPO BKN009"
-
-
-
    // this.http.get(`https://aviationweather.gov/api/data/metar?ids=${icao}`).subscribe(response => {console.log("SVAR från backend ", response)})
   }
 }
