@@ -4,54 +4,36 @@
       <div class="header-icon">✈️</div>
       <div>
         <h1>Tolka ICAO-kod</h1>
-        <div class="subtitle">Hämta aktuell METAR för flygplats</div>
+        <div class="subtitle">Hämta aktuell METAR för flygplats baserat på ICAO-kod</div>
       </div>
     </div>
-
-    <label for="icao-input">ICAO-kod</label>
-    <input class="input" id="icao-input" placeholder="Exempel: ESSA" />
+    <div class="form">
+      <input
+        (click)="dropdown()"
+        class="input"
+        id="icao-input"
+        placeholder="Sök flygplats (ICAO eller namn)"
+        list="airport-list"
+      />
+      <datalist class="dropdown-list" id="airport-list">
+        <div id="dropdown-content">
+          @for (airport of airports; track airport.ident) {
+            <option>
+              <strong>{{ airport.ident }}</strong> {{ airport.name }}
+            </option>
+          } @empty {
+            <p>Inga flygplatser hittades.</p>
+          }
+        </div>
+      </datalist>
+    </div>
 
     <div class="actions">
-      <button class="btn" (click)="runICAO()">SÖK</button>
+      <button class="btn" (click)="runICAO()">Välj</button>
     </div>
 
     <div id="result">
       <h2>RESULTAT</h2>
-      <div>
-        <strong><p>METAR:</p></strong>
-        <p id="metarString"></p>
-      </div>
-      <table>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-      </table>
-      <!-- <div class="weather-icao">
-        <i class="wi wi-day-cloudy weather-icon"></i>
-        <strong>Stockholm / ESSA</strong>
-        <div class="updated">Uppdaterad 12:50Z</div>
-      </div>
-      <div class="item"><span>Vind: </span>SVAR</div>
-      <div class="item"><span>Sikt: </span>SVAR</div>
-      <div class="item"><span>Temperatur: </span>SVAR</div>
-      <div class="item"><span>QNH: </span>SVAR</div>
-      <div class="item"><span>Moln: </span>SVAR</div> -->
-      <!-- <div>
-        <span class="subtitle">Rå METAR (hämtad via ICAO)</span>
-        <div class="raw">METAR ESSA 121050Z 24012KT CAVOK 03/M02 Q1018</div>
-      </div> -->
     </div>
   </div>
 </div>
