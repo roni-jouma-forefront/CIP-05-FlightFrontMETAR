@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
@@ -6,44 +6,25 @@ import {FormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { HttpClient } from '@angular/common/http';
-import * as Papa from "papaparse";
+import { CommonModule } from '@angular/common';
 
+import * as Papa from "papaparse";
 
 @Component({
   selector: 'app-maincontent',
   standalone: true,
-  imports: [MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule],
+  imports: [MatCardModule, MatButtonModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, CommonModule],
   templateUrl: './maincontent.html',
   styleUrls: ['./maincontent.scss']
 })
-export class Maincontent {
+export class Maincontent{
   airports: any[] = [];
   data: string | undefined; 
   constructor(private http: HttpClient) {
     this.loadCSV();
   }
 
-  //sköter dropdownen i inputen så att den 
-dropdown() {
-  const dropdownEl = document.getElementById("dropdown");
-  if (dropdownEl) {
-    dropdownEl.classList.toggle("show");
-  }
-}
-
-//placerar vald essa i input-rutan och stänger den
-// selectAirport(airport: any) {
-//   const inputEl = document.getElementById("icao-input") as HTMLInputElement;
-//   if (inputEl) {
-//     inputEl.value = airport.ident;
-//   }
-//   const dropdownEl = document.getElementById("myDropdown");
-//   if (dropdownEl) {
-//     dropdownEl.classList.remove("show");
-//   }
-// }
-
-//hämtar csvc-filen. OBS ska bytas ut mot hämtning i backenden
+  //hämtar csvc-filen. OBS BYTAS MOT HÄMTNING FRÅN BE
   loadCSV() {
     this.http.get('assets/airports.csv', { responseType: 'text' })
       .subscribe(data => {
@@ -67,16 +48,24 @@ dropdown() {
       });
     }
 
+  //sköter dropdownen i inputen så att den öppnas
+dropdown() {
+  const dropdownEl = document.getElementById("myDropdown");
+  if (dropdownEl) {
+    dropdownEl.classList.toggle("show");
+  }
+}
+
     //hämtar inmatad ICAOkod samt felmeddelande vid felaktigt format
   runICAO(): void {
     const inputEl = document.getElementById("icao-input") as HTMLInputElement;
     const input = inputEl.value.trim().toUpperCase();
     const splitInput = input.split(" "); 
     const icao = splitInput[0];
-console.log(icao)
+    console.log(icao)
 
     //Felmeddelande vi felaktig inpout
-    if(!/^[A-Za-z0-9" "]+$/.test(icao)){
+    if(!/^[A-Za-z0-9]+$/.test(icao)){
       window.alert("Ogiltigt ICAO-kodformat, testa igen")
       return;
     }

@@ -9,32 +9,21 @@
     </div>
     <div class="form">
       <input
-        (click)="dropdown()"
         class="input"
         id="icao-input"
+        type="text"
         placeholder="Sök flygplats (ICAO eller namn)"
         list="airport-list"
       />
       <datalist class="dropdown-list" id="airport-list">
-        <div id="dropdown-content">
-          @for (airport of airports; track airport.ident) {
-            <option>
-              <strong>{{ airport.ident }}</strong> {{ airport.name }}
-            </option>
-          } @empty {
-            <p>Inga flygplatser hittades.</p>
-          }
-        </div>
-      </datalist>
-      <!-- <div id="myDropdown" class="dropdown-content">
-        @for (airport of airports; track airport.ident) {
-          <p style="margin: 0; padding: 4px 0" (click)="selectAirport(airport)">
-            <strong>{{ airport.ident }}</strong> - {{ airport.name }}
-          </p>
+        @for (airport of airports; track airport) {
+          <option>
+            <strong>{{ airport.ident }}</strong> {{ airport.name }}
+          </option>
         } @empty {
           <p>Inga flygplatser hittades.</p>
         }
-      </div> -->
+      </datalist>
     </div>
 
     <div class="actions">
@@ -43,21 +32,6 @@
 
     <div id="result">
       <h2>RESULTAT</h2>
-
-      <!-- <div class="weather-icao">
-        <i class="wi wi-day-cloudy weather-icon"></i>
-        <strong>Stockholm / ESSA</strong>
-        <div class="updated">Uppdaterad 12:50Z</div>
-      </div>
-      <div class="item"><span>Vind: </span>SVAR</div>
-      <div class="item"><span>Sikt: </span>SVAR</div>
-      <div class="item"><span>Temperatur: </span>SVAR</div>
-      <div class="item"><span>QNH: </span>SVAR</div>
-      <div class="item"><span>Moln: </span>SVAR</div> -->
-      <!-- <div>
-        <span class="subtitle">Rå METAR (hämtad via ICAO)</span>
-        <div class="raw">METAR ESSA 121050Z 24012KT CAVOK 03/M02 Q1018</div>
-      </div> -->
     </div>
   </div>
 </div>
