@@ -9,20 +9,22 @@
     </div>
     <div class="form">
       <input
+        (click)="dropdown()"
         class="input"
         id="icao-input"
-        type="text"
         placeholder="Sök flygplats (ICAO eller namn)"
         list="airport-list"
       />
       <datalist class="dropdown-list" id="airport-list">
-        @for (airport of airports; track airport) {
-          <option>
-            <strong>{{ airport.ident }}</strong> {{ airport.name }}
-          </option>
-        } @empty {
-          <p>Inga flygplatser hittades.</p>
-        }
+        <div id="dropdown-content">
+          @for (airport of airports; track airport.ident) {
+            <option>
+              <strong>{{ airport.ident }}</strong> {{ airport.name }}
+            </option>
+          } @empty {
+            <p>Inga flygplatser hittades.</p>
+          }
+        </div>
       </datalist>
     </div>
 
