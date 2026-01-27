@@ -233,6 +233,14 @@ public class CheckWxMetarService : IMetarService
                 continue;
             if (part.Contains("/"))
                 continue;
+            // Skip forecast indicators and NOSIG
+            if (part == "NOSIG" || part == "TEMPO" || part == "BECMG" || part == "PROB")
+                continue;
+            // Skip cloud coverage codes
+            if (part.StartsWith("SKC") || part.StartsWith("CLR") || part.StartsWith("NSC") ||
+                part.StartsWith("NCD") || part.StartsWith("FEW") || part.StartsWith("SCT") ||
+                part.StartsWith("BKN") || part.StartsWith("OVC") || part.StartsWith("VV"))
+                continue;
 
             foreach (var code in weatherCodes)
             {
@@ -443,18 +451,43 @@ public class CheckWxMetarService : IMetarService
 
     private string DetermineWeatherIcon(MetarData metarData)
     {
-        if (metarData.Weather?.Phenomena.Any(p => p.Contains("Fog") || p.Contains("Mist")) == true)
+        // Check for severe weather first
+        if (metarData.Weather?.Phenomena.Any(p => p.Contains("Thunderstorm")) == true)
+            return "wi-thunderstorm";
+
+        if (metarData.Weather?.Phenomena.Any(p => p.Contains("Fog")) == true)
+            return "wi-fog";
+
+        if (metarData.Weather?.Phenomena.Any(p => p.Contains("Mist") || p.Contains("Haze")) == true)
             return "wi-fog";
 
         if (metarData.Weather?.Phenomena.Any(p => p.Contains("Snow")) == true)
             return "wi-snow";
 
-        if (metarData.Weather?.Phenomena.Any(p => p.Contains("Rain")) == true)
+        if (metarData.Weather?.Phenomena.Any(p => p.Contains("Rain") || p.Contains("Drizzle")) == true)
             return "wi-rain";
 
-        if (metarData.Clouds.Any(c => c.Coverage == "Broken" || c.Coverage == "Overcast"))
+        if (metarData.Weather?.Phenomena.Any(p => p.Contains("Showers")) == true)
+            return "wi-showers";
+
+        // Check cloud coverage if no weather phenomena
+        if (metarData.Clouds.Any(c => c.Coverage == "Overcast"))
             return "wi-cloudy";
 
+        if (metarData.Clouds.Any(c => c.Coverage == "Broken"))
+            return "wi-cloudy";
+
+        if (metarData.Clouds.Any(c => c.Coverage == "Scattered"))
+            return "wi-day-cloudy";
+
+        if (metarData.Clouds.Any(c => c.Coverage == "Few"))
+            return "wi-day-sunny-overcast";
+
+        if (metarData.Clouds.Any(c => c.Coverage == "Sky Clear" || c.Coverage == "Clear" ||
+                                       c.Coverage == "No Significant Cloud" || c.Coverage == "No Cloud Detected"))
+            return "wi-day-sunny";
+
+        // Default to sunny if no clouds reported
         return "wi-day-sunny";
     }
 }

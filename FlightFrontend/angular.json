@@ -31,7 +31,10 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"]
+            "styles": [
+              "src/styles.scss",
+              "weather-icons-master/css/weather-icons.min.css"
+            ]
           },
           "configurations": {
             "production": {
