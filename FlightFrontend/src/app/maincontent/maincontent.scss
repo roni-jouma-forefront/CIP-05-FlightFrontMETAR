@@ -102,6 +102,39 @@ button {
   display: block;
 }
 
+.metar-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+
+  tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+
+    &:nth-child(odd) {
+      background-color: #f9fafb;
+    }
+
+    &:nth-child(even) {
+      background-color: #ffffff;
+    }
+  }
+
+  td {
+    padding: 12px 16px;
+    vertical-align: top;
+
+    &.label {
+      font-weight: 600;
+      color: #374151;
+      width: 40%;
+    }
+
+    &.value {
+      color: #1f2937;
+    }
+  }
+}
+
 // Weather icon styling
 .weather-display {
   display: flex;
@@ -113,29 +146,29 @@ button {
   font-size: 2.5em;
   color: var(--primary);
   flex-shrink: 0;
-  
+
   &.wi-rain,
   &.wi-showers {
     color: #3b82f6;
   }
-  
+
   &.wi-thunderstorm {
     color: #dc2626;
   }
-  
+
   &.wi-snow {
     color: #60a5fa;
   }
-  
+
   &.wi-day-sunny,
   &.wi-day-sunny-overcast {
     color: #fbbf24;
   }
-  
+
   &.wi-fog {
     color: #9ca3af;
   }
-  
+
   &.wi-cloudy,
   &.wi-day-cloudy {
     color: #6b7280;

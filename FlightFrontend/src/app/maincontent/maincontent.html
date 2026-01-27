@@ -8,11 +8,12 @@
         <div class="subtitle"><p>Ange ICAO-kod eller klistra in en METAR-sträng</p></div>
       </div>
     </div>
-    
+
     <div class="form">
       <input
+        (click)="dropdown()"
         class="input"
-        id="metar-input"
+        id="code-input"
         placeholder="Ange ICAO-kod (t.ex. ESSA) eller klistra in METAR-sträng"
         list="airport-list"
       />
@@ -29,12 +30,11 @@
       </datalist>
 
       <div class="actions">
-        <button class="btn" (click)="processMetar()">Tolka</button>
+        <button class="btn" (click)="runCode()">Tolka</button>
       </div>
     </div>
   </div>
 
-  <!-- Result Card -->
   <div class="card result-card" *ngIf="metarData">
     <div class="header">
       <div class="header-icon">📊</div>
@@ -47,79 +47,79 @@
     <div class="metar-content">
       <div class="metar-raw">
         <strong>Raw METAR:</strong>
-        <p>{{ metarData.rawMetar }}</p>
+
+        <em>
+          <p>{{ metarData.rawMetar }}</p>
+        </em>
       </div>
 
-      <div class="metar-details">
-        <div class="detail-row">
-          <span class="label">ICAO:</span>
-          <span class="value">{{ metarData.icaoCode }}</span>
-        </div>
+      <table class="metar-table">
+        <tbody>
+          <tr>
+            <td class="label">ICAO:</td>
+            <td class="value">{{ metarData.icaoCode }}</td>
+          </tr>
 
-        <div class="detail-row" *ngIf="metarData.observationTime">
-          <span class="label">Observationstid:</span>
-          <span class="value">{{ metarData.observationTime | date: 'short' }}</span>
-        </div>
+          <tr *ngIf="metarData.observationTime">
+            <td class="label">Observationstid:</td>
+            <td class="value">{{ metarData.observationTime | date: 'short' }}</td>
+          </tr>
 
-        <div class="detail-row" *ngIf="metarData.wind">
-          <span class="label">Vind:</span>
-          <span class="value"
-            >{{ metarData.wind.direction }}° {{ metarData.wind.speed
-            }}<span *ngIf="metarData.wind.gust"> G{{ metarData.wind.gust }}</span>
-            {{ metarData.wind.unit }}</span
-          >
-        </div>
+          <tr *ngIf="metarData.wind">
+            <td class="label">Vind:</td>
+            <td class="value">
+              {{ metarData.wind.direction }}° {{ metarData.wind.speed
+              }}<span *ngIf="metarData.wind.gust"> G{{ metarData.wind.gust }}</span>
+              {{ metarData.wind.unit }}
+            </td>
+          </tr>
 
-        <div class="detail-row" *ngIf="metarData.visibility">
-          <span class="label">Sikt:</span>
-          <span class="value"
-            >{{ metarData.visibility.value }} {{ metarData.visibility.unit }}</span
-          >
-        </div>
+          <tr *ngIf="metarData.visibility">
+            <td class="label">Sikt:</td>
+            <td class="value">{{ metarData.visibility.value }} {{ metarData.visibility.unit }}</td>
+          </tr>
 
-        <div class="detail-row" *ngIf="metarData.temperature">
-          <span class="label">Temperatur:</span>
-          <span class="value"
-            >{{ metarData.temperature.celsius }}°C<span *ngIf="metarData.temperature.dewpoint">
-              / {{ metarData.temperature.dewpoint }}°C</span
-            ></span
-          >
-        </div>
+          <tr *ngIf="metarData.temperature">
+            <td class="label">Temperatur:</td>
+            <td class="value">
+              {{ metarData.temperature.celsius }}°C<span *ngIf="metarData.temperature.dewpoint">
+                / {{ metarData.temperature.dewpoint }}°C</span
+              >
+            </td>
+          </tr>
 
-        <div class="detail-row" *ngIf="metarData.pressure">
-          <span class="label">Tryck:</span>
-          <span class="value">{{ metarData.pressure.value }} {{ metarData.pressure.unit }}</span>
-        </div>
+          <tr *ngIf="metarData.pressure">
+            <td class="label">Tryck:</td>
+            <td class="value">{{ metarData.pressure.value }} {{ metarData.pressure.unit }}</td>
+          </tr>
 
-        <div class="detail-row" *ngIf="metarData.clouds && metarData.clouds.length > 0">
-          <span class="label">Moln:</span>
-          <div class="value">
-            <div *ngFor="let cloud of metarData.clouds">
-              {{ cloud.coverage }}<span *ngIf="cloud.altitude"> {{ cloud.altitude }} ft</span
-              ><span *ngIf="cloud.type"> ({{ cloud.type }})</span>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="detail-row"
-          *ngIf="metarData.weather && metarData.weather.phenomena.length > 0"
-        >
-          <span class="label">Väder:</span>
-          <div class="value weather-display">
-            <i
-              *ngIf="metarData.weather.iconCode"
-              [class]="'wi ' + getWeatherIconClass(metarData.weather.iconCode)"
-              class="weather-icon"
-            ></i>
-            <div class="weather-text">
-              <div *ngFor="let phenomenon of metarData.weather.phenomena">
-                {{ phenomenon }}
+          <tr *ngIf="metarData.clouds && metarData.clouds.length > 0">
+            <td class="label">Moln:</td>
+            <td class="value">
+              <div *ngFor="let cloud of metarData.clouds">
+                {{ cloud.coverage }}<span *ngIf="cloud.altitude"> {{ cloud.altitude }} ft</span
+                ><span *ngIf="cloud.type"> ({{ cloud.type }})</span>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="metarData.weather && metarData.weather.phenomena.length > 0">
+            <td class="label">Väder:</td>
+            <td class="value weather-display">
+              <i
+                *ngIf="metarData.weather.iconCode"
+                [class]="'wi ' + getWeatherIconClass(metarData.weather.iconCode)"
+                class="weather-icon"
+              ></i>
+              <div class="weather-text">
+                <div *ngFor="let phenomenon of metarData.weather.phenomena">
+                  {{ phenomenon }}
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
