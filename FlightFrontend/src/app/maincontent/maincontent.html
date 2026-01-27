@@ -4,7 +4,7 @@
       <div class="header-icon">✈️</div>
       <div>
         <h1>Tolka ICAO-kod</h1>
-        <div class="subtitle">Hämta aktuell METAR för flygplats baserat på ICAO-kod</div>
+        <div class="subtitle"><p>Hämta aktuell METAR för flygplats baserat på ICAO-kod</p></div>
       </div>
     </div>
     <div class="form">
@@ -26,12 +26,28 @@
           }
         </div>
       </datalist>
+      <div class="actions">
+        <button class="btn" (click)="runICAO()">Sök</button>
+      </div>
     </div>
+
+    <div id="result"></div>
+  </div>
+
+  <div class="card icao">
+    <div class="header">
+      <div class="header-icon">🔧</div>
+      <div>
+        <h1>Tolka METAR-sträng</h1>
+        <div class="subtitle"><p>Tolka en metar-sträng</p></div>
+      </div>
+    </div>
+    <form>
+      <input class="input" id="metar-input" placeholder="Klistra in METAR här" />
+    </form>
 
     <div class="actions">
-      <button class="btn" (click)="runICAO()">Välj</button>
-    </div>
-
+      <button class="btn" (click)="runMetar()">Tolka</button>
     <div id="result">
       <h2>RESULTAT</h2>
 
@@ -106,5 +122,7 @@
         </div>
       </div>
     </div>
+
+    <div id="result"></div>
   </div>
 </div>

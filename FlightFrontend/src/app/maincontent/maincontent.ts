@@ -72,7 +72,8 @@ export class Maincontent {
 
   //hämtar inmatad ICAOkod samt felmeddelande vid felaktigt format
   runICAO(): void {
-    const inputEl = document.getElementById('icao-input') as HTMLInputElement;
+    
+    const inputEl = document.getElementById("icao-input") as HTMLInputElement;
     const input = inputEl.value.trim().toUpperCase();
     const splitInput = input.split(' ');
     const icao = splitInput[0];
@@ -82,6 +83,7 @@ export class Maincontent {
       window.alert('Ogiltigt ICAO-kodformat, testa igen');
       return;
     }
+    console.log(icao)
 
     this.fetchMetarForICAO(icao);
   }
@@ -98,4 +100,11 @@ export class Maincontent {
       },
     });
   }
+
+runMetar() {
+  const inputMetar = document.getElementById("metar-input") as HTMLInputElement;
+  const metar = inputMetar.value.trim().toUpperCase();
+  console.log("Metar: ", metar)
+}
+
 }

@@ -1,0 +1,26 @@
+.header-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0px;
+  height: 200px;
+}
+
+.logo {
+  font-size: 60px;
+  font-family: 'Inter', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: bold;
+}
+
+.text {
+  margin-top: 35px;
+  text-align: center;
+  font-size: large;
+  font-weight: medium;
+  font-family: 'Inter', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: bold;
+}
