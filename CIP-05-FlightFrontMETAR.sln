@@ -6,19 +6,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FlightBackend", "FlightBack
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Flightfront.Application", "Flightfront.Application", "{821C3442-0E22-3C2F-CF1E-75F10BA6A44D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flightfront.Domian", "FlightBackend\Flightfront.Application\Flightfront.Domian.csproj", "{0844C478-1627-F231-A781-618531D3D8B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flightfront.Application", "FlightBackend\Flightfront.Application\Flightfront.Application.csproj", "{0844C478-1627-F231-A781-618531D3D8B8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Flightfront.Domain", "Flightfront.Domain", "{F2876167-E543-F453-3F3F-A990C654C6A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flightfront.Domian", "FlightBackend\Flightfront.Domain\Flightfront.Domian.csproj", "{89D4FB1B-B306-8463-F5D4-2A20EAFF7335}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flightfront.Domain", "FlightBackend\Flightfront.Domain\Flightfront.Domain.csproj", "{89D4FB1B-B306-8463-F5D4-2A20EAFF7335}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Flightfront.Infrastructure", "Flightfront.Infrastructure", "{FA647CF0-97E1-94DF-B4D4-155BC58D40E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flightfront.Domian", "FlightBackend\Flightfront.Infrastructure\Flightfront.Domian.csproj", "{9049387F-AB8E-737D-D07F-2E76C6EE1D5C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flightfront.Infrastructure", "FlightBackend\Flightfront.Infrastructure\Flightfront.Infrastructure.csproj", "{9049387F-AB8E-737D-D07F-2E76C6EE1D5C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Flightfront.Presentation", "Flightfront.Presentation", "{9C8FF1FB-0EA8-F94C-15C1-A2236490F330}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flightfront.Application", "FlightBackend\Flightfront.Presentation\Flightfront.Application.csproj", "{6F68A176-6FAE-74BF-0379-41EB02743183}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flightfront.Presentation", "FlightBackend\Flightfront.Presentation\Flightfront.Presentation.csproj", "{6F68A176-6FAE-74BF-0379-41EB02743183}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
