@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\FlightBackend",
+    "\\FlightBackend\\Flightfront.Application"
   ],
-  "SelectedNode": "\\C:\\Dev\\Forefront\\CodeIsPresident\\CIP-05-FlightFrontMETAR",
   "PreviewInSolutionExplorer": false
 }
