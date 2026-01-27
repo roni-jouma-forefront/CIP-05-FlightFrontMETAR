@@ -5,6 +5,9 @@
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
+// Import Weather Icons
+@import '../weather-icons-master/css/weather-icons.min.css';
+
 :root {
   --bg: #e8eaf6;
   --card: #ffffff;

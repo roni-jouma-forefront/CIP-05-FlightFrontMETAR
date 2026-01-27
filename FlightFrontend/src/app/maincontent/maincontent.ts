@@ -20,7 +20,6 @@ import { MetarData } from '../models/metar.model';
     MatFormFieldModule,
     MatInputModule,
     FormsModule,
-    MatButtonModule,
     MatIconModule,
     CommonModule,
   ],
@@ -29,7 +28,6 @@ import { MetarData } from '../models/metar.model';
 })
 export class Maincontent {
   airports: any[] = [];
-  data: string | undefined;
   metarData: MetarData | null = null;
 
   constructor(
@@ -39,15 +37,6 @@ export class Maincontent {
     this.loadCSV();
   }
 
-  //sköter dropdownen i inputen så att den
-  dropdown() {
-    const dropdownEl = document.getElementById('myDropdown');
-    if (dropdownEl) {
-      dropdownEl.classList.toggle('show');
-    }
-  }
-
-  //hämtar csvc-filen. OBS ska bytas ut mot hämtning i backenden
   loadCSV() {
     this.http.get('assets/airports.csv', { responseType: 'text' }).subscribe((data) => {
       Papa.parse(data, {
@@ -63,36 +52,45 @@ export class Maincontent {
               municipality: airport.municipality,
               type: airport.type,
             }));
-
-          console.log(this.airports);
         },
       });
     });
   }
 
-  //hämtar inmatad ICAOkod samt felmeddelande vid felaktigt format
-  runICAO(): void {
-    
-    const inputEl = document.getElementById("icao-input") as HTMLInputElement;
-    const input = inputEl.value.trim().toUpperCase();
-    const splitInput = input.split(' ');
-    const icao = splitInput[0];
+  processMetar(): void {
+    const metarInput = (document.getElementById("metar-input") as HTMLInputElement).value.trim();
 
-    // //Felmeddelande vi felaktig inpout
-    if (!/^[A-Za-z0-9]+$/.test(icao)) {
-      window.alert('Ogiltigt ICAO-kodformat, testa igen');
+    if (!metarInput) {
+      window.alert('Ange en ICAO-kod eller METAR-sträng');
       return;
     }
-    console.log(icao)
 
-    this.fetchMetarForICAO(icao);
+    const input = metarInput.toUpperCase();
+    
+    if (input.length === 4 && /^[A-Z]{4}$/.test(input)) {
+      this.fetchMetarForICAO(input);
+    }
+    else if (input.includes(' ')) {
+      const icao = input.split(' ')[0];
+      if (icao.length === 4 && /^[A-Z]{4}$/.test(icao)) {
+        this.fetchMetarForICAO(icao);
+      } else {
+        this.parseMetarString(input);
+      }
+    }
+    else {
+      this.parseMetarString(input);
+    }
+  }
+
+  parseMetarString(metarString: string): void {
+    window.alert('METAR-sträng parsing är inte implementerad än. Använd ICAO-sökning.');
   }
 
   fetchMetarForICAO(icao: string) {
     this.metarService.getMetarByIcao(icao).subscribe({
       next: (data) => {
         this.metarData = data;
-        console.log('METAR data:', data);
       },
       error: (error) => {
         console.error('Error fetching METAR:', error);
@@ -101,10 +99,20 @@ export class Maincontent {
     });
   }
 
-runMetar() {
-  const inputMetar = document.getElementById("metar-input") as HTMLInputElement;
-  const metar = inputMetar.value.trim().toUpperCase();
-  console.log("Metar: ", metar)
+getWeatherIconClass(iconCode: string): string {
+  const iconMap: { [key: string]: string } = {
+    'wi-fog': 'wi-fog',
+    'wi-snow': 'wi-snow',
+    'wi-rain': 'wi-rain',
+    'wi-showers': 'wi-showers',
+    'wi-thunderstorm': 'wi-thunderstorm',
+    'wi-cloudy': 'wi-cloudy',
+    'wi-day-cloudy': 'wi-day-cloudy',
+    'wi-day-sunny': 'wi-day-sunny',
+    'wi-day-sunny-overcast': 'wi-day-sunny-overcast',
+  };
+  
+  return iconMap[iconCode] || 'wi-day-sunny';
 }
 
 }
