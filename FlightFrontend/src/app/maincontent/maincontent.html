@@ -4,54 +4,125 @@
       <div class="header-icon">✈️</div>
       <div>
         <h1>Tolka ICAO-kod</h1>
-        <div class="subtitle">Hämta aktuell METAR för flygplats</div>
+        <div class="subtitle"><p>Hämta aktuell METAR för flygplats baserat på ICAO-kod</p></div>
+      </div>
+    </div>
+    <div class="form">
+      <input
+        (click)="dropdown()"
+        class="input"
+        id="icao-input"
+        placeholder="Sök flygplats (ICAO eller namn)"
+        list="airport-list"
+      />
+      <datalist class="dropdown-list" id="airport-list">
+        <div id="dropdown-content">
+          @for (airport of airports; track airport.ident) {
+            <option>
+              <strong>{{ airport.ident }}</strong> {{ airport.name }}
+            </option>
+          } @empty {
+            <p>Inga flygplatser hittades.</p>
+          }
+        </div>
+      </datalist>
+      <div class="actions">
+        <button class="btn" (click)="runICAO()">Sök</button>
       </div>
     </div>
 
-    <label for="icao-input">ICAO-kod</label>
-    <input class="input" id="icao-input" placeholder="Exempel: ESSA" />
+    <div id="result"></div>
+  </div>
+
+  <div class="card icao">
+    <div class="header">
+      <div class="header-icon">🔧</div>
+      <div>
+        <h1>Tolka METAR-sträng</h1>
+        <div class="subtitle"><p>Tolka en metar-sträng</p></div>
+      </div>
+    </div>
+    <form>
+      <input class="input" id="metar-input" placeholder="Klistra in METAR här" />
+    </form>
 
     <div class="actions">
-      <button class="btn" (click)="runICAO()">SÖK</button>
-    </div>
-
+      <button class="btn" (click)="runMetar()">Tolka</button>
     <div id="result">
       <h2>RESULTAT</h2>
-      <div>
-        <strong><p>METAR:</p></strong>
-        <p id="metarString"></p>
+
+      <div *ngIf="metarData" class="metar-content">
+        <div class="metar-raw">
+          <strong>Raw METAR:</strong>
+          <p>{{ metarData.rawMetar }}</p>
+        </div>
+
+        <div class="metar-details">
+          <div class="detail-row">
+            <span class="label">ICAO:</span>
+            <span class="value">{{ metarData.icaoCode }}</span>
+          </div>
+
+          <div class="detail-row" *ngIf="metarData.observationTime">
+            <span class="label">Observationstid:</span>
+            <span class="value">{{ metarData.observationTime | date: 'short' }}</span>
+          </div>
+
+          <div class="detail-row" *ngIf="metarData.wind">
+            <span class="label">Vind:</span>
+            <span class="value"
+              >{{ metarData.wind.direction }}° {{ metarData.wind.speed
+              }}<span *ngIf="metarData.wind.gust"> G{{ metarData.wind.gust }}</span>
+              {{ metarData.wind.unit }}</span
+            >
+          </div>
+
+          <div class="detail-row" *ngIf="metarData.visibility">
+            <span class="label">Sikt:</span>
+            <span class="value"
+              >{{ metarData.visibility.value }} {{ metarData.visibility.unit }}</span
+            >
+          </div>
+
+          <div class="detail-row" *ngIf="metarData.temperature">
+            <span class="label">Temperatur:</span>
+            <span class="value"
+              >{{ metarData.temperature.celsius }}°C<span *ngIf="metarData.temperature.dewpoint">
+                / {{ metarData.temperature.dewpoint }}°C</span
+              ></span
+            >
+          </div>
+
+          <div class="detail-row" *ngIf="metarData.pressure">
+            <span class="label">Tryck:</span>
+            <span class="value">{{ metarData.pressure.value }} {{ metarData.pressure.unit }}</span>
+          </div>
+
+          <div class="detail-row" *ngIf="metarData.clouds && metarData.clouds.length > 0">
+            <span class="label">Moln:</span>
+            <div class="value">
+              <div *ngFor="let cloud of metarData.clouds">
+                {{ cloud.coverage }}<span *ngIf="cloud.altitude"> {{ cloud.altitude }} ft</span
+                ><span *ngIf="cloud.type"> ({{ cloud.type }})</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="detail-row"
+            *ngIf="metarData.weather && metarData.weather.phenomena.length > 0"
+          >
+            <span class="label">Väder:</span>
+            <div class="value">
+              <div *ngFor="let phenomenon of metarData.weather.phenomena">
+                {{ phenomenon }}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <table>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-        <tr>
-          <th></th>
-        </tr>
-      </table>
-      <!-- <div class="weather-icao">
-        <i class="wi wi-day-cloudy weather-icon"></i>
-        <strong>Stockholm / ESSA</strong>
-        <div class="updated">Uppdaterad 12:50Z</div>
-      </div>
-      <div class="item"><span>Vind: </span>SVAR</div>
-      <div class="item"><span>Sikt: </span>SVAR</div>
-      <div class="item"><span>Temperatur: </span>SVAR</div>
-      <div class="item"><span>QNH: </span>SVAR</div>
-      <div class="item"><span>Moln: </span>SVAR</div> -->
-      <!-- <div>
-        <span class="subtitle">Rå METAR (hämtad via ICAO)</span>
-        <div class="raw">METAR ESSA 121050Z 24012KT CAVOK 03/M02 Q1018</div>
-      </div> -->
     </div>
+
+    <div id="result"></div>
   </div>
 </div>
