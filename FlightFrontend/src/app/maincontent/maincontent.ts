@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -29,10 +29,12 @@ import { MetarData } from '../models/metar.model';
 export class Maincontent {
   airports: any[] = [];
   metarData: MetarData | null = null;
+  isLoading: boolean = false;
 
   constructor(
     private http: HttpClient,
     private metarService: MetarService,
+    private cdr: ChangeDetectorRef,
   ) {
     this.loadCSV();
   }
@@ -83,63 +85,31 @@ export class Maincontent {
     }
     console.log(code)
 
-    this.fetchMetarForcode(code);
+   this.fetchMetarForICAO(code);
   }
 
-  fetchMetarForcode(code: string) {
-    this.metarService.getMetarByIcao(code).subscribe({
+  fetchMetarForICAO(icao: string) {
+    console.log('Starting fetch for:', icao);
+    this.isLoading = true;
+    this.metarData = null;
+    
+    this.metarService.getMetarByIcao(icao).subscribe({
       next: (data) => {
         this.metarData = data;
-        console.log('METAR data:', data);
+        this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Error fetching METAR:', error);
-        window.alert('Kunde inte hämta METAR-data för ' + code);
+
+        this.isLoading = false;
+        this.cdr.detectChanges();
+        window.alert('Kunde inte hämta METAR-data för ' + icao);
       },
+      complete: () => {
+        console.log('Observable completed');
+      }
     });
   }
-
-   // processMetar(): void {
-  //   const metarInput = (document.getElementById("metar-input") as HTMLInputElement).value.trim();
-
-  //   if (!metarInput) {
-  //     window.alert('Ange en code-kod eller METAR-sträng');
-  //     return;
-  //   }
-
-  //   const input = metarInput.toUpperCase();
-    
-  //   if (input.length === 4 && /^[A-Z]{4}$/.test(input)) {
-  //     this.fetchMetarForcode(input);
-  //   }
-  //   else if (input.includes(' ')) {
-  //     const code = input.split(' ')[0];
-  //     if (code.length === 4 && /^[A-Z]{4}$/.test(code)) {
-  //       this.fetchMetarForcode(code);
-  //     } else {
-  //       this.parseMetarString(input);
-  //     }
-  //   }
-  //   else {
-  //     this.parseMetarString(input);
-  //   }
-  // }
-
-  // parseMetarString(metarString: string): void {
-  //   window.alert('METAR-sträng parsing är inte implementerad än. Använd code-sökning.');
-  // }
-
-  // fetchMetarForcode(code: string) {
-  //   this.metarService.getMetarBycode(code).subscribe({
-  //     next: (data) => {
-  //       this.metarData = data;
-  //     },
-  //     error: (error) => {
-  //       console.error('Error fetching METAR:', error);
-  //       window.alert('Kunde inte hämta METAR-data för ' + code);
-  //     },
-  //   });
-  // }
 
   getWeatherIconClass(iconCode: string): string {
     const iconMap: { [key: string]: string } = {
