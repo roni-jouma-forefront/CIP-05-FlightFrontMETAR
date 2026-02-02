@@ -30,7 +30,7 @@ export class Maincontent {
   airports: any[] = [];
   metarData: MetarData | null = null;
   isLoading: boolean = false;
-  searchedAirportName: string = "";
+  searchedAirportName: string = '';
 
   constructor(
     private http: HttpClient,
@@ -55,11 +55,12 @@ export class Maincontent {
           const allowedTypes = ['large_airport', 'medium_airport'];
 
           this.airports = result.data
-            .filter((airport) => 
-              allowedTypes.includes(airport.type) && 
-              airport.ident && 
-              airport.ident.length === 4 && 
-              /^[A-Z]{4}$/.test(airport.ident.toUpperCase())
+            .filter(
+              (airport) =>
+                allowedTypes.includes(airport.type) &&
+                airport.ident &&
+                airport.ident.length === 4 &&
+                /^[A-Z]{4}$/.test(airport.ident.toUpperCase()),
             )
             .map((airport) => ({
               ident: airport.ident,
@@ -72,32 +73,35 @@ export class Maincontent {
     });
   }
 
-
   runCode(): void {
-    const inputEl = document.getElementById("code-input") as HTMLInputElement;
-    const input = inputEl.value.trim().toUpperCase();
-    const splitInput = input.split(' ');
-    const code = splitInput[0];
+    const inputEl = document.getElementById('code-input') as HTMLInputElement;
+    const input = inputEl.value.trim();
 
-    if (!/^[A-Za-z0-9]+$/.test(code)) {
+    // Extract the first word to check format and find airport name
+    const splitInput = input.split(' ');
+    const firstWord = splitInput[0].toUpperCase();
+
+    if (!/^[A-Za-z0-9]+$/.test(firstWord)) {
       window.alert('Ogiltigt kodformat, testa igen');
       return;
     }
-    console.log(code)
+    console.log('Sending to backend:', input);
 
-    const airportName = this.airports.find(a => a.ident.toUpperCase() === code);
-    this.searchedAirportName = airportName 
-    ? `${airportName.name}, ${airportName.municipality}` 
-    : code; 
+    // Find airport name using the first word (ICAO code)
+    const airportName = this.airports.find((a) => a.ident.toUpperCase() === firstWord);
+    this.searchedAirportName = airportName
+      ? `${airportName.name}, ${airportName.municipality}`
+      : firstWord;
 
-   this.fetchMetarForICAO(code);
+    // Send the full input (could be ICAO or full METAR string)
+    this.fetchMetarForICAO(input);
   }
 
   fetchMetarForICAO(icao: string) {
     console.log('Starting fetch for:', icao);
     this.isLoading = true;
     this.metarData = null;
-    
+
     this.metarService.getMetarByIcao(icao).subscribe({
       next: (data) => {
         this.metarData = data;
@@ -106,16 +110,14 @@ export class Maincontent {
         console.log(this.metarData);
       },
       error: (error) => {
-
         this.isLoading = false;
         this.cdr.detectChanges();
         window.alert('Kunde inte hämta METAR-data för ' + icao);
       },
       complete: () => {
         console.log('Observable completed');
-      }
+      },
     });
-  
   }
 
   getWeatherIconClass(iconCode: string): string {
@@ -137,8 +139,7 @@ export class Maincontent {
       'wi-dust': 'wi-dust',
       'wi-smoke': 'wi-smoke',
     };
-    
+
     return iconMap[iconCode] || 'wi-day-sunny';
   }
-
 }

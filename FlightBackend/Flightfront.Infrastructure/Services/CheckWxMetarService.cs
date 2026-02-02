@@ -3,6 +3,7 @@ using System.Text.Json;
 using Flightfront.Application.Interfaces;
 using Flightfront.Domain.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Flightfront.Infrastructure.Services;
 
@@ -10,42 +11,108 @@ public class CheckWxMetarService : IMetarService
 {
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
+    private readonly ILogger<CheckWxMetarService> _logger;
 
-    public CheckWxMetarService(HttpClient httpClient, IConfiguration configuration)
+    public CheckWxMetarService(
+        HttpClient httpClient,
+        IConfiguration configuration,
+        ILogger<CheckWxMetarService> logger
+    )
     {
         _httpClient = httpClient;
         _apiKey =
             configuration["CheckWxApi:ApiKey"]
             ?? throw new InvalidOperationException("CheckWX API key not configured");
+        _logger = logger;
 
         _httpClient.BaseAddress = new Uri("https://api.checkwx.com/");
         _httpClient.DefaultRequestHeaders.Add("X-API-Key", _apiKey);
     }
 
-    public async Task<MetarData?> GetMetarByIcaoAsync(string icaoCode)
+    public async Task<MetarData?> GetMetarByIcaoAsync(string input)
     {
-        try
-        {
-            var response = await _httpClient.GetAsync($"metar/{icaoCode.ToUpper()}");
-
-            if (!response.IsSuccessStatusCode)
-                return null;
-
-            var content = await response.Content.ReadAsStringAsync();
-            var jsonDoc = JsonDocument.Parse(content);
-
-            if (jsonDoc.RootElement.GetProperty("results").GetInt32() == 0)
-                return null;
-
-            var data = jsonDoc.RootElement.GetProperty("data");
-            var rawMetar = data[0].GetString() ?? string.Empty;
-
-            return ParseMetarString(rawMetar);
-        }
-        catch
-        {
+        if (string.IsNullOrWhiteSpace(input))
             return null;
+
+        var trimmedInput = input.Trim();
+        _logger.LogInformation("Processing input: {Input}", trimmedInput);
+
+        var parts = trimmedInput.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        // Extract the first 4-letter code
+        var firstPart = parts.Length > 0 ? parts[0] : "";
+
+        // Remove "METAR" or "SPECI" prefix if present
+        if (
+            firstPart.Equals("METAR", StringComparison.OrdinalIgnoreCase)
+            || firstPart.Equals("SPECI", StringComparison.OrdinalIgnoreCase)
+        )
+        {
+            firstPart = parts.Length > 1 ? parts[1] : "";
         }
+
+        // Get first 4 letters from the first part
+        var icaoCode = new string(firstPart.TakeWhile(char.IsLetter).Take(4).ToArray());
+        _logger.LogInformation("Extracted ICAO code: {IcaoCode}", icaoCode);
+
+        // If we have exactly 4 letters
+        if (icaoCode.Length == 4)
+        {
+            // Check if this is a full METAR string by looking at the second relevant part
+            var relevantParts = parts
+                .Where(p =>
+                    !p.Equals("METAR", StringComparison.OrdinalIgnoreCase)
+                    && !p.Equals("SPECI", StringComparison.OrdinalIgnoreCase)
+                )
+                .ToArray();
+
+            _logger.LogInformation(
+                "Relevant parts count: {Count}, Second part: {SecondPart}",
+                relevantParts.Length,
+                relevantParts.Length > 1 ? relevantParts[1] : "N/A"
+            );
+
+            // If second part exists and looks like a date/time group (ends with Z and has 6 digits)
+            // then it's a full METAR string (e.g., "ESSB 021220Z 11005KT...")
+            if (
+                relevantParts.Length > 1
+                && relevantParts[1].EndsWith("Z", StringComparison.OrdinalIgnoreCase)
+                && relevantParts[1].Length >= 6
+                && relevantParts[1].TrimEnd('Z', 'z').All(char.IsDigit)
+            )
+            {
+                _logger.LogInformation("Detected as full METAR string - parsing directly");
+                return ParseMetarString(trimmedInput);
+            }
+
+            // Otherwise, treat as ICAO code (e.g., "ESSB" or "ESSB Stockholm-Bromma Airport")
+            _logger.LogInformation("Detected as ICAO code - fetching from API");
+            try
+            {
+                var response = await _httpClient.GetAsync($"metar/{icaoCode.ToUpper()}");
+
+                if (!response.IsSuccessStatusCode)
+                    return null;
+
+                var content = await response.Content.ReadAsStringAsync();
+                var jsonDoc = JsonDocument.Parse(content);
+
+                if (jsonDoc.RootElement.GetProperty("results").GetInt32() == 0)
+                    return null;
+
+                var data = jsonDoc.RootElement.GetProperty("data");
+                var rawMetar = data[0].GetString() ?? string.Empty;
+
+                return ParseMetarString(rawMetar);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        // If no valid ICAO code found, try to parse as raw METAR anyway
+        return ParseMetarString(trimmedInput);
     }
 
     public MetarData? ParseMetarString(string metarString)
@@ -237,9 +304,17 @@ public class CheckWxMetarService : IMetarService
             if (part == "NOSIG" || part == "TEMPO" || part == "BECMG" || part == "PROB")
                 continue;
             // Skip cloud coverage codes
-            if (part.StartsWith("SKC") || part.StartsWith("CLR") || part.StartsWith("NSC") ||
-                part.StartsWith("NCD") || part.StartsWith("FEW") || part.StartsWith("SCT") ||
-                part.StartsWith("BKN") || part.StartsWith("OVC") || part.StartsWith("VV"))
+            if (
+                part.StartsWith("SKC")
+                || part.StartsWith("CLR")
+                || part.StartsWith("NSC")
+                || part.StartsWith("NCD")
+                || part.StartsWith("FEW")
+                || part.StartsWith("SCT")
+                || part.StartsWith("BKN")
+                || part.StartsWith("OVC")
+                || part.StartsWith("VV")
+            )
                 continue;
 
             foreach (var code in weatherCodes)
@@ -464,7 +539,10 @@ public class CheckWxMetarService : IMetarService
         if (metarData.Weather?.Phenomena.Any(p => p.Contains("Snow")) == true)
             return "wi-snow";
 
-        if (metarData.Weather?.Phenomena.Any(p => p.Contains("Rain") || p.Contains("Drizzle")) == true)
+        if (
+            metarData.Weather?.Phenomena.Any(p => p.Contains("Rain") || p.Contains("Drizzle"))
+            == true
+        )
             return "wi-rain";
 
         if (metarData.Weather?.Phenomena.Any(p => p.Contains("Showers")) == true)
@@ -483,8 +561,14 @@ public class CheckWxMetarService : IMetarService
         if (metarData.Clouds.Any(c => c.Coverage == "Few"))
             return "wi-day-sunny-overcast";
 
-        if (metarData.Clouds.Any(c => c.Coverage == "Sky Clear" || c.Coverage == "Clear" ||
-                                       c.Coverage == "No Significant Cloud" || c.Coverage == "No Cloud Detected"))
+        if (
+            metarData.Clouds.Any(c =>
+                c.Coverage == "Sky Clear"
+                || c.Coverage == "Clear"
+                || c.Coverage == "No Significant Cloud"
+                || c.Coverage == "No Cloud Detected"
+            )
+        )
             return "wi-day-sunny";
 
         // Default to sunny if no clouds reported

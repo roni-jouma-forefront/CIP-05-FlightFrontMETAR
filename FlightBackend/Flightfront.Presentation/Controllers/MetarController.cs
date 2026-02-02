@@ -19,70 +19,46 @@ public class MetarController : ControllerBase
     }
 
     /// <summary>
-    /// Retrieves METAR data for a specific airport by ICAO code.
+    /// Retrieves METAR data for a specific airport by ICAO code or parses a raw METAR string.
     /// </summary>
-    /// <param name="icaoCode">The 4-character ICAO airport code (e.g., KJFK, EGLL).</param>
+    /// <param name="input">The 4-character ICAO airport code (e.g., KJFK, EGLL) or a full METAR string.</param>
     /// <returns>The parsed METAR data for the specified airport.</returns>
     /// <response code="200">Returns the METAR data</response>
-    /// <response code="400">Invalid ICAO code format</response>
+    /// <response code="400">Invalid input format</response>
     /// <response code="404">No METAR data found for the specified airport</response>
     /// <response code="500">Internal server error</response>
-    [HttpGet("{icaoCode}")]
+    [HttpGet]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetMetar(string icaoCode)
+    public async Task<IActionResult> GetMetar([FromQuery] string input)
     {
-        if (string.IsNullOrWhiteSpace(icaoCode))
+        if (string.IsNullOrWhiteSpace(input))
         {
             return BadRequest(
                 new ErrorResponse
                 {
-                    Error = "ICAO code is required.",
+                    Error = "Input is required.",
                     ErrorCode = "VALIDATION_ERROR",
-                    Details = "The ICAO code parameter cannot be empty.",
-                }
-            );
-        }
-
-        if (icaoCode.Length != 4)
-        {
-            return BadRequest(
-                new ErrorResponse
-                {
-                    Error = "Invalid ICAO code length.",
-                    ErrorCode = "VALIDATION_ERROR",
-                    Details = "ICAO codes must be exactly 4 characters long.",
-                }
-            );
-        }
-
-        if (!Regex.IsMatch(icaoCode, "^[A-Za-z]{4}$"))
-        {
-            return BadRequest(
-                new ErrorResponse
-                {
-                    Error = "Invalid ICAO code format.",
-                    ErrorCode = "VALIDATION_ERROR",
-                    Details = "ICAO codes must contain only letters (A-Z).",
+                    Details = "Please provide either an ICAO code or a METAR string.",
                 }
             );
         }
 
         try
         {
-            var metar = await _metarService.GetMetarByIcaoAsync(icaoCode);
+            var metar = await _metarService.GetMetarByIcaoAsync(input);
 
             if (metar == null)
             {
                 return NotFound(
                     new ErrorResponse
                     {
-                        Error = $"No METAR data found for {icaoCode.ToUpper()}.",
+                        Error = $"No METAR data found for the provided input.",
                         ErrorCode = "NOT_FOUND",
                         Details =
-                            "The airport may not have current METAR data available, or the ICAO code may be incorrect.",
+                            "The airport may not have current METAR data available, or the input may be incorrect.",
                     }
                 );
             }
@@ -91,7 +67,7 @@ public class MetarController : ControllerBase
         }
         catch (HttpRequestException ex)
         {
-            _logger.LogError(ex, "Network error fetching METAR for {IcaoCode}", icaoCode);
+            _logger.LogError(ex, "Network error fetching METAR for {Input}", input);
             return StatusCode(
                 503,
                 new ErrorResponse
@@ -105,7 +81,7 @@ public class MetarController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error fetching METAR for {IcaoCode}", icaoCode);
+            _logger.LogError(ex, "Error fetching METAR for {Input}", input);
             return StatusCode(
                 500,
                 new ErrorResponse

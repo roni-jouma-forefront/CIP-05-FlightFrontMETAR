@@ -12,7 +12,7 @@ export class MetarService {
 
   constructor(private http: HttpClient) {}
 
-  getMetarByIcao(icaoCode: string): Observable<MetarData> {
-    return this.http.get<MetarData>(`${this.apiUrl}/${icaoCode.toUpperCase()}`);
+  getMetarByIcao(input: string): Observable<MetarData> {
+    return this.http.get<MetarData>(`${this.apiUrl}?input=${encodeURIComponent(input)}`);
   }
 }
