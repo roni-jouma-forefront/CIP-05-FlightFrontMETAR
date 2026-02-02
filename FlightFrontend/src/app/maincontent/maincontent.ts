@@ -77,7 +77,6 @@ export class Maincontent {
     const inputEl = document.getElementById('code-input') as HTMLInputElement;
     const input = inputEl.value.trim();
 
-    // Extract the first word to check format and find airport name
     const splitInput = input.split(' ');
     const firstWord = splitInput[0].toUpperCase();
 
@@ -85,15 +84,12 @@ export class Maincontent {
       window.alert('Ogiltigt kodformat, testa igen');
       return;
     }
-    console.log('Sending to backend:', input);
 
-    // Find airport name using the first word (ICAO code)
     const airportName = this.airports.find((a) => a.ident.toUpperCase() === firstWord);
     this.searchedAirportName = airportName
       ? `${airportName.name}, ${airportName.municipality}`
       : firstWord;
 
-    // Send the full input (could be ICAO or full METAR string)
     this.fetchMetarForICAO(input);
   }
 
