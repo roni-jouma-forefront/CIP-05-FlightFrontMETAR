@@ -1,10 +1,15 @@
 <nav class="app-bar">
   <div class="toolbar">
     <span class="title">✈️</span>
-    <div class="nav-buttons">
-      <a class="nav-button" routerLink="/">Start</a>
-      <a class="nav-button" routerLink="/">Om Oss</a>
-      <a class="nav-button" routerLink="/">Tolka väder </a>
-    </div>
+    <button class="hamburger" (click)="toggleMenu()" [class.active]="isMenuOpen">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+  <div class="nav-menu" [class.open]="isMenuOpen">
+    <a class="nav-button" routerLink="/" (click)="closeMenu()">Start</a>
+    <a class="nav-button" routerLink="/" (click)="closeMenu()">Om Oss</a>
+    <a class="nav-button" routerLink="/" (click)="closeMenu()">Tolka väder</a>
   </div>
 </nav>
