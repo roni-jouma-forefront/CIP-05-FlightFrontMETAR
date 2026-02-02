@@ -5,7 +5,7 @@
       <div class="header-icon">✈️</div>
       <div>
         <h1>Tolka METAR</h1>
-        <div class="subtitle"><p>Ange ICAO-kod eller klistra in en METAR-sträng</p></div>
+        <div class="subtitle"><p>Ange ICAO-kod (t.ex ESSA) eller klistra in en METAR-sträng</p></div>
       </div>
     </div>
 
@@ -14,7 +14,7 @@
         (click)="dropdown()"
         class="input"
         id="code-input"
-        placeholder="Ange ICAO-kod (t.ex. ESSA) eller klistra in METAR-sträng"
+        placeholder="Ange ICAO-kod eller METAR-sträng"
         list="airport-list"
       />
       <datalist class="dropdown-list" id="airport-list">
@@ -65,6 +65,11 @@
 
         <table class="metar-table">
           <tbody>
+               <tr>
+              <td class="label">Flygplats:</td>
+              <td class="value">{{ searchedAirportName }}</td>
+            </tr>
+
             <tr>
               <td class="label">ICAO:</td>
               <td class="value">{{ metarData.icaoCode }}</td>
@@ -150,7 +155,7 @@
                   <div class="weather-text">
                     @for (phenomenon of metarData.weather.phenomena; track phenomenon) {
                       <div>
-                        {{ phenomenon }}
+                        <p>( {{ phenomenon }} )</p>
                       </div>
                     }
                   </div>

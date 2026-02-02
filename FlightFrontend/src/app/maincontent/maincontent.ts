@@ -30,6 +30,7 @@ export class Maincontent {
   airports: any[] = [];
   metarData: MetarData | null = null;
   isLoading: boolean = false;
+  searchedAirportName: string = "";
 
   constructor(
     private http: HttpClient,
@@ -78,12 +79,16 @@ export class Maincontent {
     const splitInput = input.split(' ');
     const code = splitInput[0];
 
-    // Felmeddelande vid felaktig input
     if (!/^[A-Za-z0-9]+$/.test(code)) {
       window.alert('Ogiltigt kodformat, testa igen');
       return;
     }
     console.log(code)
+
+    const airportName = this.airports.find(a => a.ident.toUpperCase() === code);
+    this.searchedAirportName = airportName 
+    ? `${airportName.name}, ${airportName.municipality}` 
+    : code; 
 
    this.fetchMetarForICAO(code);
   }
@@ -98,6 +103,7 @@ export class Maincontent {
         this.metarData = data;
         this.isLoading = false;
         this.cdr.detectChanges();
+        console.log(this.metarData);
       },
       error: (error) => {
 
@@ -109,6 +115,7 @@ export class Maincontent {
         console.log('Observable completed');
       }
     });
+  
   }
 
   getWeatherIconClass(iconCode: string): string {
